@@ -17,20 +17,29 @@ export default function Home() {
 
     async function fetchAudio(selected) {
         try {
-            const res = await fetch(`http://localhost:8000/api/audio?lang=${encodeURIComponent(selected)}`)
-            if (!res.ok) throw new Error("Audio not found")
-            const data = await res.json()
-            setAudioUrl(data.url)
-            const full = data.url.startsWith("/") ? `http://localhost:8000${data.url}` : data.url
-            if (audioRef.current) {
-                audioRef.current.src = full
-            }
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/audio?lang=${encodeURIComponent(selected)}`
+          );
+          if (!res.ok) throw new Error("Audio not found");
+      
+          const data = await res.json();
+          setAudioUrl(data.url);
+      
+          // Build absolute URL if needed
+          const full = data.url.startsWith("/")
+            ? `${process.env.NEXT_PUBLIC_API_URL}${data.url}`
+            : data.url;
+      
+          if (audioRef.current) {
+            audioRef.current.src = full;
+          }
         } catch (e) {
-            console.error(e)
-            alert("Failed to load audio. Make sure the backend is running at http://localhost:8000")
+          console.error(e);
+          alert("Failed to load audio. Please check your backend.");
         }
-    }
-
+      }
+      
+      
     function handlePlay() {
         if (!audioRef.current || !audioRef.current.src) {
             alert("No audio loaded. Select language first.")
