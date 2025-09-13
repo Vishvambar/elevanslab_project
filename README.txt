@@ -1,39 +1,40 @@
- ElevenLabs Clone 
+🎙️ ElevenLabs Clone
 
-This project replicates parts of the ElevenLabs website (as shown in the provided assignment images).
-It includes a frontend (Next.js) and backend (Express + MongoDB) with basic audio playback functionality.
+This project replicating parts of the ElevenLabs website UI.
+It includes a Next.js frontend and an Express + MongoDB backend, with audio playback functionality.
+
+🔗 Live Demo
+
+Frontend (Vercel) → https://elevanslab.vercel.app/
+
+Backend API (Render) → https://elevanslab.onrender.com/
+
 
 🚀 Features
 
-Frontend built with Next.js (deployed on Vercel).
+Frontend (Next.js): Responsive UI with multiple tabs.
 
-Backend built with Express + MongoDB (deployed on Render).
+Backend (Express.js + MongoDB): Stores and serves audio file URLs.
 
-MongoDB Atlas stores audio metadata (language + file URL).
+Database (MongoDB Atlas): Audio metadata (language + URL).
 
-"Text to Speech" tab includes:
+Audio Features:
 
-Language dropdown (English, Arabic, …)
+Dropdown to select language (English, Arabic, …).
 
-Play button 🎧
+Play audio 🎧.
 
-Download button ⬇️
+Download audio ⬇️.
 
-Text editor area
+Text editor area.
 
-Other tabs exist in UI but remain empty.
+Deployment:
 
-Audio files are stored in backend/static/audio and served by backend.
+Frontend → Vercel
 
-🛠️ Tech Stack
-
-Frontend → Next.js (React + TailwindCSS)
-
-Backend → Express.js (Node.js)
+Backend → Render
 
 Database → MongoDB Atlas
-
-Deployment → Vercel (frontend) + Render (backend)
 
 📂 Project Structure
 /frontend   → Next.js app (UI)
@@ -45,12 +46,12 @@ Deployment → Vercel (frontend) + Render (backend)
 git clone https://github.com/YOUR_USERNAME/elevanslab_project.git
 cd elevanslab_project
 
-2. Setup Backend
+2. Backend
 cd backend
 npm install
 
 
-Create .env file in backend/:
+Create .env in backend/:
 
 MONGO_URI=mongodb+srv://USERNAME:PASSWORD@cluster0.mongodb.net/assignment
 PORT=8000
@@ -63,7 +64,7 @@ npm run start
 
 Backend runs at → http://localhost:8000
 
-3. Setup Frontend
+3. Frontend
 cd ../frontend
 npm install
 
@@ -83,101 +84,45 @@ Frontend runs at → http://localhost:3000
 🌍 Deployment
 Backend (Render)
 
-Push code to GitHub.
-
-On Render → Create new Web Service.
-
-Root directory: backend
+Root Directory: backend
 
 Build Command: npm install
 
 Start Command: node server.js
 
-Add Environment Variable:
+Env Vars:
 
 MONGO_URI=your_mongo_atlas_uri
 
 Frontend (Vercel)
 
-Import repo on Vercel.
+Root Directory: frontend
 
-Root directory: frontend
+Build Command: npm run build
 
-Build command: npm run build
+Output Directory: .next
 
-Output directory: .next
+Env Vars:
 
-Add Environment Variable:
-
-NEXT_PUBLIC_API_URL=https://<your-backend>.onrender.com
-
-🔊 Testing
-
-Visit frontend (Vercel URL).
-
-Select a language → Play → audio plays.
-
-Click Download → .wav file downloads.
-
-Backend API available at:
-
-/api/health → { "status": "ok" }
-
-/api/audio?lang=English → returns JSON with audio URL
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
 
 🌐 Adding More Languages
 
-You can easily extend the app to support more languages by adding audio files and updating the MongoDB collection.
+Add new .wav files into backend/static/audio/.
 
-1. Add Audio Files
+Insert a document into MongoDB (Atlas UI or seed script):
 
-Place your new .wav files in:
-
-backend/static/audio/
+{ "lang": "Hindi", "url": "/static/audio/hindi.wav" }
 
 
-Example:
+Add language to the frontend dropdown.
 
-backend/static/audio/hindi.wav
-backend/static/audio/chinese.wav
-backend/static/audio/french.wav
+Redeploy → done.
 
-2. Insert into MongoDB
+🔊 API Endpoints
 
-Each language needs a record in your MongoDB Atlas database (audios collection).
+GET /api/health → { "status": "ok" }
 
-Example document:
+GET /api/audio?lang=English → returns audio record from MongoDB
 
-{
-  "lang": "Hindi",
-  "url": "/static/audio/hindi.wav"
-}
-
-
-You can insert via:
-
-Seed script (seed.js)
-
-MongoDB Atlas UI → Collections → Insert Document
-
-Mongo Shell / Compass
-
-3. Update Frontend Dropdown
-
-Open frontend/pages/index.js (or your component with the dropdown) and add new options:
-
-<select value={lang} onChange={onLangChange}>
-  <option>English</option>
-  <option>Arabic</option>
-  <option>Hindi</option>
-  <option>Chinese</option>
-  <option>French</option>
-</select>
-
-4. Test
-
-Redeploy backend (so new static files are served).
-
-Refresh frontend (Vercel).
-
-Select new language → Click Play → Audio should work.
+GET /static/audio/english.wav → serves actual audio file
