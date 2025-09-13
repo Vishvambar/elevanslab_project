@@ -4,13 +4,25 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-
+const allowedOrigins = [
+  "http://localhost:3000",          // local dev
+  "https://elevanslab.vercel.app"   // your Vercel frontend
+];
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+}));
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors());
+
 app.use(express.json());
 app.use("/static", express.static(path.join(__dirname, "static")));
 
