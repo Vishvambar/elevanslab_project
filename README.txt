@@ -9,6 +9,12 @@ Frontend (Vercel) → https://elevanslab.vercel.app/
 
 Backend API (Render) → https://elevanslab.onrender.com/
 
+Screenshots : 
+
+Landing page : https://ibb.co/yBsfJJPN
+
+Text to speech Tab : https://ibb.co/vvjRNjzP
+
 
 🚀 Features
 
