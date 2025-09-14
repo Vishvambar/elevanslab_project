@@ -16,29 +16,45 @@ export default function Home() {
     }
 
     async function fetchAudio(selected) {
-        try {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/audio?lang=${encodeURIComponent(selected)}`
-          );
-          if (!res.ok) throw new Error("Audio not found");
-      
-          const data = await res.json();
-          setAudioUrl(data.url);
-      
-          // Build absolute URL if needed
-          const full = data.url.startsWith("/")
-            ? `${process.env.NEXT_PUBLIC_API_URL}${data.url}`
-            : data.url;
-      
-          if (audioRef.current) {
-            audioRef.current.src = full;
-          }
-        } catch (e) {
-          console.error(e);
-          alert("Failed to load audio. Please check your backend.");
+  try {
+    let attempts = 0;
+    let success = false;
+    let data;
+
+    while (!success && attempts < 5) {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/audio?lang=${encodeURIComponent(selected)}`
+      );
+
+      if (res.ok) {
+        data = await res.json();
+        success = true;
+      } else {
+        attempts++;
+        if (attempts === 1) {
+          alert("Backend is waking up, please wait 20–30 seconds...");
         }
+        await new Promise(r => setTimeout(r, 5000)); // wait 5 sec before retry
       }
-      
+    }
+
+    if (!success) throw new Error("Backend not responding");
+
+    setAudioUrl(data.url);
+
+    const full = data.url.startsWith("/")
+      ? `${process.env.NEXT_PUBLIC_API_URL}${data.url}`
+      : data.url;
+
+    if (audioRef.current) {
+      audioRef.current.src = full;
+    }
+  } catch (e) {
+    console.error(e);
+    alert("Failed to load audio. Please try again in a few seconds.");
+  }
+}
+
       
     function handlePlay() {
         if (!audioRef.current || !audioRef.current.src) {
